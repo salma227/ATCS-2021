@@ -4,8 +4,7 @@ import random
 class TicTacToe:
     def __init__(self):
         # TODO: Set up the board to be '-'
-        #self.board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]]
-        self.board = [["O", "X", "O"], ["X", "O", "X"], ["X", "O", "-"]]
+        self.board = [["-", "-", "-"], ["-", "-", "-"], ["-", "-", "-"]]
 
     def print_instructions(self):
         # TODO: Print the instructions to the game
@@ -52,7 +51,10 @@ class TicTacToe:
 
     def take_turn(self, player):
         # TODO: Simply call the take_manual_turn function
-        self.take_manual_turn(player)
+        if (player == 'O'):
+            self.take_random_turn(player)
+        else:
+            self.take_manual_turn(player)
 
     def check_col_win(self, player):
         # TODO: Check col win
@@ -115,6 +117,15 @@ class TicTacToe:
         if self.check_win('O'):
             return False
         return True
+
+    def take_random_turn(self, player):
+        while True:
+            r = random.randint(0, 3)
+            c = random.randint(0, 3)
+            valid = self.is_valid_move(r, c)
+            if valid:
+                break
+        self.place_player(player, r, c)
 
     def play_game(self):
         # TODO: Play game
