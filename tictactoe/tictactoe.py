@@ -52,7 +52,7 @@ class TicTacToe:
     def take_turn(self, player):
         # TODO: Simply call the take_manual_turn function
         if (player == 'O'):
-            self.take_random_turn(player)
+            self.take_minimax_turn(player)
         else:
             self.take_manual_turn(player)
 
@@ -127,6 +127,10 @@ class TicTacToe:
                 break
         self.place_player(player, r, c)
 
+    def take_minimax_turn(self, player):
+        score, row, col = self.minimax(player)
+        self.place_player(player, row, col)
+
     def play_game(self):
         # TODO: Play game
         gameGoing = True
@@ -148,3 +152,40 @@ class TicTacToe:
                 player = 'X'
 
         print("GAME OVER")
+
+
+    def minimax(self, player):
+        opt_row = -1
+        opt_col = -1
+        if self.check_win("O"):
+            return 10, None, None
+        elif self.check_tie():
+            return 0, None, None
+        elif self.check_win("X"):
+            return -10, None, None
+        if player == "O":
+            best = -100
+            for r in range(3):
+                for c in range (3):
+                    if self.board[r][c] == '-':
+                        self.place_player("O", r, c)
+                        score = self.minimax("X")[0]
+                        if best < score:
+                            best = score
+                            opt_row = r
+                            opt_col = c
+                        self.place_player('-', r, c)
+            return(best, opt_row, opt_col)
+        if player == "X":
+            worst = 100
+            for r in range(3):
+                for c in range(3):
+                    if self.board[r][c] == '-':
+                        self.place_player("X", r, c)
+                        score = self.minimax("O")[0]
+                        if worst > score:
+                            worst = score
+                            opt_row = r
+                            opt_col = c
+                        self.place_player('-', r, c)
+            return (worst, opt_row, opt_col)
