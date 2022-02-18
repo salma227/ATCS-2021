@@ -1,5 +1,5 @@
 import random
-
+import time
 
 class TicTacToe:
     def __init__(self):
@@ -53,7 +53,7 @@ class TicTacToe:
         # TODO: Simply call the take_manual_turn function
         # sets AI minimax depth to 2
         if player == 'O':
-            self.take_minimax_turn(player, 2)
+            self.take_minimax_alpha_beta_turn(player, 2)
         else:
             self.take_manual_turn(player)
 
@@ -129,8 +129,18 @@ class TicTacToe:
         self.place_player(player, r, c)
 
     def take_minimax_turn(self, player, depth):
+        start = time.time()
         score, row, col = self.minimax(player, depth)
+        end = time.time()
         self.place_player(player, row, col)
+        print("This turn took: ", end-start, " seconds")
+
+    def take_minimax_alpha_beta_turn(self, player, depth):
+        start = time.time()
+        score, row, col = self.minimax_alpha_beta(player, depth, -100, 100)
+        end = time.time()
+        self.place_player(player, row, col)
+        print("This turn took: ", end - start, " seconds")
 
     def play_game(self):
         # TODO: Play game
@@ -189,5 +199,49 @@ class TicTacToe:
                             worst = score
                             opt_row = r
                             opt_col = c
+                        self.place_player('-', r, c)
+            return worst, opt_row, opt_col
+
+    def minimax_alpha_beta(self, player, depth, alpha, beta):
+        opt_row = -1
+        opt_col = -1
+        if self.check_win("O"):
+            return 10, None, None
+        elif self.check_tie():
+            return 0, None, None
+        elif self.check_win("X"):
+            return -10, None, None
+        elif depth == 0:
+            return 0, None, None
+        if player == "O":
+            best = -100
+            for r in range(3):
+                for c in range(3):
+                    if self.board[r][c] == '-':
+                        self.place_player("O", r, c)
+                        score = self.minimax("X", depth-1)[0]
+                        alpha = max(alpha, score)
+                        if best < score:
+                            best = score
+                            opt_row = r
+                            opt_col = c
+                        if alpha >= beta:
+                            return best, opt_row, opt_col
+                        self.place_player('-', r, c)
+            return best, opt_row, opt_col
+        if player == "X":
+            worst = 100
+            for r in range(3):
+                for c in range(3):
+                    if self.board[r][c] == '-':
+                        self.place_player("X", r, c)
+                        score = self.minimax("O", depth-1)[0]
+                        beta = max(beta, score)
+                        if worst > score:
+                            worst = score
+                            opt_row = r
+                            opt_col = c
+                        if alpha >= beta:
+                            return worst, opt_row, opt_col
                         self.place_player('-', r, c)
             return worst, opt_row, opt_col
