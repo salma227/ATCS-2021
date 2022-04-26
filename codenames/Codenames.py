@@ -1,6 +1,5 @@
 import random
 
-
 class Codenames:
     def __init__(self):
         self.players = 0
