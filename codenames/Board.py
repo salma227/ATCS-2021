@@ -36,30 +36,12 @@ class Board:
                     print(self.cards[i].word, end="\t\t")
                 else:
                     print(self.cards[i].word, end="\t")
-            # if card already guessed, simply print out color
+            # if card already guessed, print out '---'
             else:
-                print(self.cards[i].color, end="\t")
+                print("---", end="\t\t\t\t")
             if i == 4 or i == 9 or i == 14 or i == 19 or i == 24:
                 print('\t')
-
-    def print_SPYMASTER_board(self):
-        # print out board with formatting
-        for i in range(0, 25):
-            if self.cards[i].guessed is False:
-                if (len(self.cards[i].word) < 4):
-                    print(self.cards[i].word, end="\t\t\t\t")
-                elif (len(self.cards[i].word) < 8):
-                    print(self.cards[i].word, end="\t\t\t")
-                elif (len(self.cards[i].word) < 12):
-                    print(self.cards[i].word, end="\t\t")
-                else:
-                    print(self.cards[i].word, end="\t")
-            # if card already guessed, simply print out color
-            else:
-                print(self.cards[i].color, end="\t")
-            if i == 4 or i == 9 or i == 14 or i == 19 or i == 24:
-                print('\t')
-                for n in range(i-5, i):
+                for n in range(i-4, i+1):
                     if(len(self.cards[n].color) < 4):
                         print(self.cards[n].color, end="\t\t\t\t")
                     elif (len(self.cards[n].color) < 8):

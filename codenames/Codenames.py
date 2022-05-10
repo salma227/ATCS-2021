@@ -7,14 +7,14 @@ from itertools import product
 
 class Codenames:
     def __init__(self):
-        self.players = 0
-        self.codeword = ""
-        self.num_cards = 0
-        self.answer_cards = []
+        self.players = 0  # stretch goal, solitaire or multiplayer play
+        self.codeword = ""  # console input codeword, changes every round
+        self.num_cards = 0  # number of cards in play, changes every round
+        self.answer_cards = []  # corresponding cards from the board, changes every round
         self.guesses = []
         self.still_playing = True
 
-    def print_instructions(self):
+    def print_instructions(self):  # print instructions for how to play the game
         print("Welcome to Codenames!")
         print("Each word on the board has an assigned color! Red will score you points, beige is neutral, and black "
               "will end the game and you lose! ")
@@ -26,13 +26,14 @@ class Codenames:
         print("Good luck!")
         print('\n\n\n')
 
-    def take_manual_turn(self, board):
+    def take_manual_turn(self, board):  # get input from the console SPYMASTER
         # SPYMASTER turn, always first
-        self.codeword = input("SPYMASTER! Enter codeword: ")
-        while self.codeword in board.used_words:
+        self.codeword = input("SPYMASTER! Enter codeword: ")  # get codeword
+        while self.codeword in board.used_words:  # make sure it isn't a word from the board
             self.codeword = input("Code word cannot be present on the board! Enter VALID codeword: ")
-        self.num_cards = int(input("Enter number of words: "))
-        for i in range(0, self.num_cards):
+        self.num_cards = int(input("Enter number of words: "))  # set instance variable for how many cards are in play
+        # get the corresponding words from the console
+        for i in range(0, self.num_cards):  # (don't actually use these words, but would need for stretch goals)
             a_card = input("Enter one corresponding word from the board: ")
             while a_card not in board.used_words:
                 a_card = input("Enter one VALID corresponding word from the board: ")
@@ -40,58 +41,62 @@ class Codenames:
         print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
 
-    def take_AI_turn(self, board):
-        similarity_scores = []
+    def take_AI_turn(self, board): # the AI player (Judi)'s turn
         guesses_dict = {}
         for x in range(0, len(board.cards)):
             board_word_s, code_word_s = wn.synsets(board.cards[x].word), wn.synsets(self.codeword)
             maxscore = 0
             for i, j in list(product(*[code_word_s, board_word_s])):
                 score = i.wup_similarity(j)  # Wu-Palmer Similarity
+                # set maxscore equal to that card's similarity to the code word
                 maxscore = score if maxscore < score else maxscore
-            similarity_scores.append(maxscore)
+            # add that similarity score and card word to guesses_dict
             guesses_dict[board.cards[x].word] = maxscore
-        similarity_scores.sort()
-        similarity_scores.reverse()
-
+        # sort the dictionary from greatest to lowest similarity score
         sorted_guesses_dict = sorted(guesses_dict.items(), key=lambda x: x[1], reverse=True)
+
+        # clear self.guesses of previous turn's guesses
+        self.guesses = []
+        # loop through for num_cards the codeword corresponds to (ie number of guesses Judi can make)
         for i in range(0, self.num_cards):
-            self.guesses = []
-            print(sorted_guesses_dict[i][0])
             self.guesses.append(sorted_guesses_dict[i][0])
         print("JUDI: Hmmmm.... ", self.codeword, "?")
         print("My guesses are:")
         for b in self.guesses:
-            print(b)
+            print(b)  # print guesses (word on card)
+        print("")
 
-    def update_board (self, board):
+    def update_board(self, board):  # sets guessed cards on the board to empty, guessed strings
         for i in self.guesses:
-            board.cards[i].guessed = True
+            for x in range(len(board.cards)):
+                if board.cards[x].word == i:
+                    board.cards[x].guessed = True
+                    board.cards[x].word = ""
 
-    def check_lose(self, board):
-        for i in range(len(self.guesses)):
-            if board.cards[i].guessed is True and board.cards[i].color == "BLACK":
+    def check_lose(self, board):  # check if BLACK card has been guessed yet
+        for x in range(len(board.cards)):
+            if board.cards[x].guessed == True and board.cards[x].color == "BLACK":
                 return True
-            return False
+        return False
 
-    def check_win(self, board):
+    def check_win(self, board):  # check if there are unguessed RED cards left
         for i in range(len(board.cards)):
-            if board.cards[i].color == "RED":
+            if board.cards[i].color == "RED" and board.cards[i].guessed == False:
                 return False
         return True
 
 
     def play_game(self):
         board = Board()
-        board.print_SPYMASTER_board()
+        board.print_board()
         while self.still_playing is True:
             self.take_manual_turn(board)
-            board.print_board()
             self.take_AI_turn(board)
-            board.print_SPYMASTER_board()
+            self.update_board(board)
+            board.print_board()
             if self.check_win(board) is True:
-                print("You've won! Congrats!")
-                self.still_playing is False
+                print("You've won! Congrats! :)")
+                self.still_playing = False
             elif self.check_lose(board) is True:
-                print("Judi guessed the black card! You lose!")
-                self.still_playing is False
+                print("JUDI guessed the black card! You lose! :(")
+                self.still_playing = False
