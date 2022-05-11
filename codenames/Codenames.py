@@ -1,9 +1,11 @@
-import random
-from Card import *
+# 5/10/2022
+# Salma Siddiqui
+
 from Board import *
 
 from nltk.corpus import wordnet as wn
 from itertools import product
+
 
 class Codenames:
     def __init__(self):
@@ -11,18 +13,19 @@ class Codenames:
         self.codeword = ""  # console input codeword, changes every round
         self.num_cards = 0  # number of cards in play, changes every round
         self.answer_cards = []  # corresponding cards from the board, changes every round
-        self.guesses = []
+        self.guesses = []  # current AI guesses, changes every round
         self.still_playing = True
 
     def print_instructions(self):  # print instructions for how to play the game
         print("Welcome to Codenames!")
         print("Each word on the board has an assigned color! Red will score you points, beige is neutral, and black "
               "will end the game and you lose! ")
-        print("you are the SPYMASTER. You will be giving your AI guesser, JUDI, a codeword that corresponds to certain "
+        print("You are the SPYMASTER. You will be giving your AI guesser, JUDI, a codeword that corresponds to certain "
               "words on the board.")
-        print("You can make your codeword correspond to as many words on the board as you'd like")
+        print("You can make your codeword correspond to as many words on the board as you'd like, ")
         print("just remember that JUDI will be looking for the words with the most similarity.")
-        print("You want your guesser to guess all the red words with as few turns as possible.")
+        print("After JUDI guesses a word, it will disappear from the board.")
+        print("You want JUDI to guess all the red words with as few turns as possible.")
         print("Good luck!")
         print('\n\n\n')
 
@@ -40,9 +43,9 @@ class Codenames:
             self.answer_cards.append(a_card)
         print('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
 
-
     def take_AI_turn(self, board): # the AI player (Judi)'s turn
         guesses_dict = {}
+        # similarity code adapted from user alvas, September 18, 2013 (stackOverflow)
         for x in range(0, len(board.cards)):
             board_word_s, code_word_s = wn.synsets(board.cards[x].word), wn.synsets(self.codeword)
             maxscore = 0
@@ -85,8 +88,7 @@ class Codenames:
                 return False
         return True
 
-
-    def play_game(self):
+    def play_game(self):  # executes manual and AI turns until game is over
         board = Board()
         board.print_board()
         while self.still_playing is True:
@@ -98,5 +100,6 @@ class Codenames:
                 print("You've won! Congrats! :)")
                 self.still_playing = False
             elif self.check_lose(board) is True:
-                print("JUDI guessed the black card! You lose! :(")
+                print("Bummer! JUDI guessed the black card! You lose! :(")
+                print("Better luck next time!")
                 self.still_playing = False

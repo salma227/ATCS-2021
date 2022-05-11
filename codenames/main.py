@@ -1,5 +1,7 @@
+# 5/10/2022
+# Salma Siddiqui
+
 from Codenames import *
-from Board import *
 
 game = Codenames()
 game.print_instructions()

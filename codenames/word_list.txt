@@ -873,10 +873,10 @@ mark
 match
 mission
 pain
-pleasure
+parasol
 score
 screw
-sex
+lipstick
 shop
 shower
 suit
@@ -927,7 +927,7 @@ bill
 bother
 cake
 code
-curve
+arch
 designer
 dimension
 dress
@@ -973,7 +973,7 @@ arm
 aside
 associate
 bet
-blow
+beast
 border
 bread
 branch
