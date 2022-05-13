@@ -97,7 +97,7 @@ class Codenames:
             self.update_board(board)
             board.print_board()
             if self.check_win(board) is True:
-                print("You've won! Congrats! :)")
+                print("YOU'VE WON! CONGRATS! :o)")
                 self.still_playing = False
             elif self.check_lose(board) is True:
                 print("Bummer! JUDI guessed the black card! You lose! :(")
